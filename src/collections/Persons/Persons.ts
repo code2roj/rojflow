@@ -1,10 +1,10 @@
 import type { CollectionConfig } from 'payload'
 
-export const Prompts: CollectionConfig = {
-  slug: 'prompts',
+export const Persons: CollectionConfig = {
+  slug: 'persons',
   access: {
-    create: () => true,
-    read: () => true,
+    create: ({ req: { user } }) => Boolean(user),
+    read: ({ req: { user } }) => Boolean(user),
     update: ({ req: { user } }) => Boolean(user),
     delete: ({ req: { user } }) => Boolean(user),
   },
@@ -20,22 +20,16 @@ export const Prompts: CollectionConfig = {
   },
   fields: [
     {
-      name: 'title',
+      name: 'name',
+      label: 'Name',
       type: 'text',
       required: true,
     },
     {
-      name: 'description',
-      type: 'textarea',
-    },
-    {
-      name: 'systemMessage',
-      type: 'textarea',
-    },
-    {
-      name: 'userMessage',
-      label: 'User Message',
-      type: 'textarea',
+      name: 'secondName',
+      label: 'Second Name',
+      type: 'text',
+      required: false,
     },
   ],
 }
