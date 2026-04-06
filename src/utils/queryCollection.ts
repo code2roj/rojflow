@@ -1,19 +1,23 @@
-import type { Payload } from 'payload'
+/**
+ * REST API Execution: Fetches data via HTTP using the API Key.
+ */
+export const fetchRestData = async (path = '/api/collection', queryString = '') => {
+  const apiKey = process.env.PAYLOAD_API_KEY
+  const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+  
 
-const findPrompts = async (payload: Payload) => {
-  const prompts = await payload.find({
-    collection: 'prompts',
-    where: {
-      prefix: {
-        equals: 'testApi',
-      },
+  const response = await fetch(`${baseUrl}${path}${queryString}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `users API-Key ${apiKey}`,
+      'Content-Type': 'application/json',
     },
-    select: {
-      systemMessage: true,
-    },
-    depth: 0,
-    limit: 1,
+    next: { revalidate: 60 }, // Optional Next.js caching
   })
 
-  return prompts
+  if (!response.ok) {
+    throw new Error(`Payload REST Error: ${response.statusText}`)
+  }
+
+  return await response.json()
 }
