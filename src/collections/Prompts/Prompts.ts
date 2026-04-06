@@ -3,14 +3,14 @@ import type { CollectionConfig } from 'payload'
 export const Prompts: CollectionConfig = {
   slug: 'prompts',
   access: {
-    create: () => true,
+    create: ({ req: { user } }) => Boolean(user),
     read: () => true,
     update: ({ req: { user } }) => Boolean(user),
     delete: ({ req: { user } }) => Boolean(user),
   },
   admin: {
-    useAsTitle: '',
-    defaultColumns: [],
+    useAsTitle: 'prefix',
+    defaultColumns: ['title', 'prefix', 'description'],
   },
   labels: {},
   hooks: {
@@ -21,6 +21,12 @@ export const Prompts: CollectionConfig = {
   fields: [
     {
       name: 'title',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'prefix',
+      label: 'Prefix',
       type: 'text',
       required: true,
     },
@@ -36,6 +42,27 @@ export const Prompts: CollectionConfig = {
       name: 'userMessage',
       label: 'User Message',
       type: 'textarea',
+    },
+    {
+      name: 'defaultProvider',
+      label: 'Default Provider',
+      type: 'select',
+      defaultValue: 'Groq',
+      options: ['Groq', 'OpenRouter', 'OpenAi', 'Gemini', 'Grok', 'Ollama', 'Othe'],
+    },
+    {
+      name: 'maxCompletionTokens',
+      label: 'Max Completion Tokens',
+      type: 'number',
+      defaultValue: '1024',
+    },
+    {
+      name: 'status',
+      label: 'Status',
+      type: 'select',
+      defaultValue: 'Created',
+      required: true,
+      options: ['Created', 'Testing', 'Ready', 'Suspended', 'Archived'],
     },
   ],
 }
