@@ -17,6 +17,7 @@ import { Users } from './collections/Users/Users' // Import the Users collection
 import { Media } from './collections/Media/Media' // Import the Media collection schema
 import { Persons } from './collections/Persons/Persons' // Import the Persons collection schema
 import { Prompts } from './collections/Prompts/Prompts'
+import { AiGenerations } from './collections/AiGenerations/AiGenerations'
 // ----------------------------->>>>>>>>>>>>>>>>>>> PLUGINS <<<<<<<
 
 import { importExportPlugin } from '@payloadcms/plugin-import-export'
@@ -40,6 +41,7 @@ export default buildConfig({
   },
   collections: [
     // Register available data collections
+    AiGenerations,
     Users,
     Media,
     Prompts,
@@ -62,7 +64,13 @@ export default buildConfig({
   sharp, // Assign the sharp library for image manipulation
   plugins: [
     importExportPlugin({
-      collections: [{ slug: 'media' }, { slug: 'users' }, { slug: 'prompts' }, { slug: 'persons' }],
+      collections: [
+        { slug: 'ai-generations' },
+        { slug: 'media' },
+        { slug: 'users' },
+        { slug: 'prompts' },
+        { slug: 'persons' },
+      ],
     }),
   ],
 })

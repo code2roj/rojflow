@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    'ai-generations': AiGeneration;
     users: User;
     media: Media;
     prompts: Prompt;
@@ -81,6 +82,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    'ai-generations': AiGenerationsSelect<false> | AiGenerationsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     prompts: PromptsSelect<false> | PromptsSelect<true>;
@@ -136,6 +138,35 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ai-generations".
+ */
+export interface AiGeneration {
+  id: number;
+  source: string;
+  promptUsed?: (number | null) | Prompt;
+  aiResponse?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prompts".
+ */
+export interface Prompt {
+  id: number;
+  title: string;
+  prefix: string;
+  description?: string | null;
+  systemMessage?: string | null;
+  userMessage?: string | null;
+  defaultProvider?: ('Groq' | 'OpenRouter' | 'OpenAi' | 'Gemini' | 'Grok' | 'Ollama' | 'Othe') | null;
+  maxCompletionTokens?: number | null;
+  status: 'Created' | 'Testing' | 'Ready' | 'Suspended' | 'Archived';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -181,19 +212,6 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "prompts".
- */
-export interface Prompt {
-  id: number;
-  title: string;
-  description?: string | null;
-  systemMessage?: string | null;
-  userMessage?: string | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -397,6 +415,10 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'ai-generations';
+        value: number | AiGeneration;
+      } | null)
+    | ({
         relationTo: 'users';
         value: number | User;
       } | null)
@@ -456,6 +478,17 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ai-generations_select".
+ */
+export interface AiGenerationsSelect<T extends boolean = true> {
+  source?: T;
+  promptUsed?: T;
+  aiResponse?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -504,9 +537,13 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface PromptsSelect<T extends boolean = true> {
   title?: T;
+  prefix?: T;
   description?: T;
   systemMessage?: T;
   userMessage?: T;
+  defaultProvider?: T;
+  maxCompletionTokens?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -668,7 +705,7 @@ export interface TaskCreateCollectionExport {
     id: string;
     name: string;
     batchSize?: number | null;
-    collectionSlug: 'users' | 'media' | 'prompts' | 'persons' | 'exports' | 'imports';
+    collectionSlug: 'ai-generations' | 'users' | 'media' | 'prompts' | 'persons' | 'exports' | 'imports';
     drafts?: ('yes' | 'no') | null;
     exportCollection: string;
     fields?: string[] | null;
