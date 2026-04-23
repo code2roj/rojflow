@@ -59,6 +59,9 @@ importers:
       '@mantinex/mantine-logo':
         specifier: ^2.0.0
         version: 2.0.0(@mantine/core@9.0.0(@mantine/hooks@9.0.0(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/hooks@9.0.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@openrouter/sdk':
+        specifier: ^0.12.20
+        version: 0.12.20
       '@payloadcms/db-postgres':
         specifier: 3.81.0
         version: 3.81.0(payload@3.81.0(graphql@16.13.2)(typescript@5.7.3))
@@ -150,6 +153,9 @@ importers:
       prettier:
         specifier: ^3.4.2
         version: 3.8.1
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
       typescript:
         specifier: 5.7.3
         version: 5.7.3
@@ -1446,6 +1452,9 @@ packages:
   '@nolyfill/is-core-module@1.0.39':
     resolution: {integrity: sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==}
     engines: {node: '>=12.4.0'}
+
+  '@openrouter/sdk@0.12.20':
+    resolution: {integrity: sha512-5CrbvQS/02sko455TIpzieHnYwDYH+bn7bn+CS/5d/2YtTGOhyI5yq2jIn/ux2poeNg62vGuUA2dNNeCyfIo2A==}
 
   '@payloadcms/db-postgres@3.81.0':
     resolution: {integrity: sha512-po37oq1EN3qZk1kp+xD3X00tqybCKvLMThtEY9mEtU1puANEqpvWeVeKW/Y8P+NgPgSy2BvXK91iVzHzytwqtQ==}
@@ -5481,6 +5490,10 @@ snapshots:
 
   '@nolyfill/is-core-module@1.0.39': {}
 
+  '@openrouter/sdk@0.12.20':
+    dependencies:
+      zod: 4.3.6
+
   '@payloadcms/db-postgres@3.81.0(payload@3.81.0(graphql@16.13.2)(typescript@5.7.3))':
     dependencies:
       '@payloadcms/drizzle': 3.81.0(@types/pg@8.10.2)(payload@3.81.0(graphql@16.13.2)(typescript@5.7.3))(pg@8.16.3)
@@ -8786,7 +8799,7 @@ snapshots:
   tsx@4.21.0:
     dependencies:
       esbuild: 0.27.7
-      get-tsconfig: 4.8.1
+      get-tsconfig: 4.13.7
     optionalDependencies:
       fsevents: 2.3.3
 

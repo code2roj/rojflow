@@ -1,4 +1,18 @@
 'use server'
+/**
+ * @file groqService.ts
+ * @description A utility wrapper for the Groq SDK to execute chat completions.
+ * This function validates environment variables, handles system instructions, 
+ * and provides standardized error logging for API failures.
+ *
+ * @param {string} text - The user's input or prompt to be processed.
+ * @param {number} [maxCompletionTokens=1000] - Optional limit for the response length.
+ * @param {string} [groqModel='llama-3.3-70b-versatile'] - The specific Groq model ID to use.
+ * @param {string} systemInstruction - The mandatory system prompt defining the AI's persona or constraints.
+ * * @returns {Promise<string>} The trimmed text content of the AI's response.
+ * @throws {Error} If GROQ_API_KEY is missing, systemInstruction is null, or the API request fails.
+ */
+
 
 import Groq from 'groq-sdk'
 
