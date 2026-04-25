@@ -67,7 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    'ai-generations': AiGeneration;
+    'ai-interactions': AiInteraction;
     users: User;
     media: Media;
     prompts: Prompt;
@@ -82,7 +82,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    'ai-generations': AiGenerationsSelect<false> | AiGenerationsSelect<true>;
+    'ai-interactions': AiInteractionsSelect<false> | AiInteractionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     prompts: PromptsSelect<false> | PromptsSelect<true>;
@@ -138,13 +138,29 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ai-generations".
+ * via the `definition` "ai-interactions".
  */
-export interface AiGeneration {
+export interface AiInteraction {
   id: number;
-  source: string;
-  promptUsed?: (number | null) | Prompt;
+  userMessage?: string | null;
   aiResponse?: string | null;
+  source: string;
+  systemMessage?: (number | null) | Prompt;
+  model?: string | null;
+  provider?: ('Groq' | 'OpenRouter' | 'Othe') | null;
+  reasoning?: boolean | null;
+  reasoningText?: string | null;
+  error?: string | null;
+  notes?: string | null;
+  metadata?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -158,7 +174,6 @@ export interface Prompt {
   prefix: string;
   description?: string | null;
   systemMessage?: string | null;
-  userMessage?: string | null;
   defaultProvider?: ('Groq' | 'OpenRouter' | 'OpenAi' | 'Gemini' | 'Grok' | 'Ollama' | 'Othe') | null;
   maxCompletionTokens?: number | null;
   status: 'Created' | 'Testing' | 'Ready' | 'Suspended' | 'Archived';
@@ -415,8 +430,8 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'ai-generations';
-        value: number | AiGeneration;
+        relationTo: 'ai-interactions';
+        value: number | AiInteraction;
       } | null)
     | ({
         relationTo: 'users';
@@ -478,12 +493,20 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ai-generations_select".
+ * via the `definition` "ai-interactions_select".
  */
-export interface AiGenerationsSelect<T extends boolean = true> {
-  source?: T;
-  promptUsed?: T;
+export interface AiInteractionsSelect<T extends boolean = true> {
+  userMessage?: T;
   aiResponse?: T;
+  source?: T;
+  systemMessage?: T;
+  model?: T;
+  provider?: T;
+  reasoning?: T;
+  reasoningText?: T;
+  error?: T;
+  notes?: T;
+  metadata?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -540,7 +563,6 @@ export interface PromptsSelect<T extends boolean = true> {
   prefix?: T;
   description?: T;
   systemMessage?: T;
-  userMessage?: T;
   defaultProvider?: T;
   maxCompletionTokens?: T;
   status?: T;
@@ -705,7 +727,7 @@ export interface TaskCreateCollectionExport {
     id: string;
     name: string;
     batchSize?: number | null;
-    collectionSlug: 'ai-generations' | 'users' | 'media' | 'prompts' | 'persons' | 'exports' | 'imports';
+    collectionSlug: 'ai-interactions' | 'users' | 'media' | 'prompts' | 'persons' | 'exports' | 'imports';
     drafts?: ('yes' | 'no') | null;
     exportCollection: string;
     fields?: string[] | null;

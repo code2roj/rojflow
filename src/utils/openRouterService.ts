@@ -12,26 +12,24 @@
  * @throws {Error} If OPENROUTER_API_KEY is missing, systemInstruction is missing, or the API fails.
  */
 
-
-import { OpenRouter } from '@openrouter/sdk';
+import { OpenRouter } from "@openrouter/sdk";
 
 // 1. Module Augmentation to match the 2026 schema precisely.
 // This adds the 'reasoning' object to the request and the 'reasoning' string to the response.
-declare module '@openrouter/sdk' {
+declare module "@openrouter/sdk" {
   interface ChatRequest {
     reasoning?: {
-      effort?: 'low' | 'medium' | 'high';
+      effort?: "low" | "medium" | "high";
       exclude?: boolean;
     };
     include_reasoning?: boolean; // Legacy but supported for DeepSeek R1
   }
 }
-
 const openRouter = new OpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY || '',
+  apiKey: process.env.OPENROUTER_API_KEY || "",
   // SDK 2026 uses camelCase for constructor options
-  httpReferer: process.env.SITE_URL || '',
-  appTitle: process.env.SITE_NAME || '',
+  httpReferer: process.env.SITE_URL || "",
+  appTitle: process.env.SITE_NAME || "",
 });
 
 export const queryOpenRouter = async (
@@ -41,40 +39,58 @@ export const queryOpenRouter = async (
   systemInstruction?: string,
   reasoning: boolean = false,
 ): Promise<string> => {
-  if (!text) return '';
-  if (!process.env.OPENROUTER_API_KEY) throw new Error('OPENROUTER_API_KEY missing.');
-  if (!systemInstruction) throw new Error('System instruction missing.');
+  if (!text) return "";
+  if (!process.env.OPENROUTER_API_KEY)
+    throw new Error("OPENROUTER_API_KEY missing.");
+  if (!systemInstruction) throw new Error("System instruction missing.");
 
   try {
     const completion = await openRouter.chat.send({
       chatRequest: {
-        model: openRouterModel || 'openai/gpt-5.2',
+        model: openRouterModel || "openai/gpt-5.2",
         messages: [
-          { role: 'system', content: systemInstruction },
-          { role: 'user', content: text },
+          { role: "system", content: systemInstruction },
+          { role: "user", content: text },
         ],
         maxTokens: maxCompletionTokens || 1000,
         temperature: 1,
         stream: false,
-        // The reasoning property is now an object for effort control.
-        // If false, we explicitly exclude to ensure no hidden token costs.
-        reasoning: reasoning ? { effort: 'medium' } : { exclude: true },
-        include_reasoning: reasoning, // Redundancy for older model support
+        reasoning: reasoning ? { effort: "none" } : undefined, // Set to 'none' to get reasoning without extra effort, or omit entirely if not needed
       },
     });
 
     const message = completion.choices?.[0]?.message as any;
-    
+
     // OpenRouter 2026 returns reasoning in the 'reasoning' field of the message
-    const reasoningText = reasoning && message?.reasoning 
-      ? `### THOUGHT PROCESS\n${message.reasoning}\n\n---\n\n` 
-      : '';
-      
-    const finalContent = message?.content || '';
+    const reasoningText =
+      reasoning && message?.reasoning
+        ? `### THOUGHT PROCESS\n${message.reasoning}\n\n---\n\n`
+        : "";
+
+    const finalContent = message?.content || "";
 
     return (reasoningText + finalContent).trim();
-  } catch (error: any) {
-    console.error('--- OPENROUTER API ERROR ---', error?.message || error);
-    throw new Error(error.message || 'API error occurred.');
+  } catch (error: unknown) {
+    const fullError =
+      error instanceof Error
+        ? JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              ...Object.getOwnPropertyNames(error).reduce<
+                Record<string, unknown>
+              >((acc, key) => {
+                acc[key] = (error as unknown as Record<string, unknown>)[key];
+                return acc;
+              }, {}),
+            },
+            null,
+            2,
+          )
+        : JSON.stringify(error, null, 2);
+
+    console.error("--- OPENROUTER API ERROR ---", fullError);
+    throw new Error(fullError);
   }
 };

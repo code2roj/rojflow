@@ -1,12 +1,8 @@
 // src/app/(frontend)/layout.tsx
 import {
-  MantineProvider,
-  ColorSchemeScript,
   mantineHtmlProps,
-  Center,
-  Container
+  Center
 } from '@mantine/core';
-import theme from './theme';
 import { AppShellClient } from '@/components/AppShellClient/AppShellClient';
 import '@mantine/core/styles.css';
 
@@ -17,10 +13,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
       </head>
       <body>
-        <ColorSchemeScript defaultColorScheme="dark" />
-        <MantineProvider theme={theme} defaultColorScheme="dark">
-            <Container>{children}</Container>
-        </MantineProvider>
+          <AppShellClient>
+            <Center>{children}</Center>
+          </AppShellClient>
       </body>
     </html>
   );

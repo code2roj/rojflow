@@ -39,11 +39,6 @@ export const Prompts: CollectionConfig = {
       type: 'textarea',
     },
     {
-      name: 'userMessage',
-      label: 'User Message',
-      type: 'textarea',
-    },
-    {
       name: 'defaultProvider',
       label: 'Default Provider',
       type: 'select',
