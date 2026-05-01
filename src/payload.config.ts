@@ -63,7 +63,7 @@ export default buildConfig({
   plugins: [
     importExportPlugin({
       collections: [
-        { slug: "ai-generations" },
+        { slug: "ai-interactions" },
         { slug: "media" },
         { slug: "users" },
         { slug: "prompts" },

@@ -175,6 +175,7 @@ export interface Prompt {
   description?: string | null;
   systemMessage?: string | null;
   defaultProvider?: ('Groq' | 'OpenRouter' | 'OpenAi' | 'Gemini' | 'Grok' | 'Ollama' | 'Othe') | null;
+  bestSuitableModels?: string | null;
   maxCompletionTokens?: number | null;
   status: 'Created' | 'Testing' | 'Ready' | 'Suspended' | 'Archived';
   updatedAt: string;
@@ -564,6 +565,7 @@ export interface PromptsSelect<T extends boolean = true> {
   description?: T;
   systemMessage?: T;
   defaultProvider?: T;
+  bestSuitableModels?: T;
   maxCompletionTokens?: T;
   status?: T;
   updatedAt?: T;

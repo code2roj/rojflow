@@ -1,7 +1,7 @@
 /**
  * @file openRouterService.ts
  * @description A utility wrapper for the OpenRouter SDK to execute chat completions.
- * This version uses the correct camelCase properties (maxTokens) required by the SDK.
+ .
  *
  * @param {string} text - The user's input or prompt to be processed.
  * @param {number} [maxCompletionTokens=1000] - Optional limit for the response length.
@@ -14,24 +14,23 @@
 
 import { OpenRouter } from "@openrouter/sdk";
 
-// 1. Module Augmentation to match the 2026 schema precisely.
-// This adds the 'reasoning' object to the request and the 'reasoning' string to the response.
 declare module "@openrouter/sdk" {
   interface ChatRequest {
     reasoning?: {
       effort?: "low" | "medium" | "high";
       exclude?: boolean;
     };
-    include_reasoning?: boolean; // Legacy but supported for DeepSeek R1
+    include_reasoning?: boolean;
   }
 }
+// ---------------------------------Initialize OpenRouter client
 const openRouter = new OpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY || "",
-  // SDK 2026 uses camelCase for constructor options
   httpReferer: process.env.SITE_URL || "",
   appTitle: process.env.SITE_NAME || "",
 });
 
+//----------------------------------------------- Main function
 export const queryOpenRouter = async (
   text: string,
   maxCompletionTokens?: number,
@@ -47,21 +46,19 @@ export const queryOpenRouter = async (
   try {
     const completion = await openRouter.chat.send({
       chatRequest: {
-        model: openRouterModel || "openai/gpt-5.2",
+        model: openRouterModel || "gpt-oss-20b",
         messages: [
           { role: "system", content: systemInstruction },
           { role: "user", content: text },
         ],
-        maxTokens: maxCompletionTokens || 1000,
+        maxTokens: maxCompletionTokens || 4000,
         temperature: 1,
         stream: false,
-        reasoning: reasoning ? { effort: "none" } : undefined, // Set to 'none' to get reasoning without extra effort, or omit entirely if not needed
+        reasoning: reasoning ? { effort: "none" } : undefined,
       },
     });
 
     const message = completion.choices?.[0]?.message as any;
-
-    // OpenRouter 2026 returns reasoning in the 'reasoning' field of the message
     const reasoningText =
       reasoning && message?.reasoning
         ? `### THOUGHT PROCESS\n${message.reasoning}\n\n---\n\n`

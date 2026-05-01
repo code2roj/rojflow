@@ -11,7 +11,7 @@ import {
   CopyButton,
   Text,
 } from "@mantine/core";
-import { testOpenRouterInteraction } from "./testOpenRouterInteraction";
+import { cleanFarsi } from "./actions/cleanFarsi";
 
 type Props = {
   text: string;
@@ -28,7 +28,7 @@ export function AiCompletionCardClient({ text }: Props) {
 
     startTransition(async () => {
       try {
-        const response = await testOpenRouterInteraction(text);
+        const response = await cleanFarsi(text);
         setResult(response);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
@@ -67,7 +67,7 @@ export function AiCompletionCardClient({ text }: Props) {
           <Paper mih="90vh" p="md">
             <Stack justify="space-evenly" align="stretch" gap="xl">
               <Button onClick={handleGenerate} loading={isPending}>
-                Generate
+                Clean Farsi Text
               </Button>
 
               <CopyButton value={copyValue}>
